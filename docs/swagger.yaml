@@ -1,0 +1,645 @@
+basePath: /v1
+definitions:
+  forms.Product:
+    properties:
+      foto:
+        type: string
+      harga_beli:
+        type: integer
+      harga_jual:
+        type: integer
+      id_barang:
+        type: integer
+      id_mercant:
+        type: integer
+      id_supplier:
+        type: integer
+      is_aktif:
+        type: string
+      nama:
+        type: string
+      sku:
+        type: string
+      stock:
+        type: integer
+    type: object
+  forms.User:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      id_mercant:
+        type: integer
+      id_user:
+        type: integer
+      last_login:
+        type: integer
+      nama:
+        type: string
+      no_telp:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  request.Product:
+    properties:
+      foto:
+        type: string
+      harga_beli:
+        type: integer
+      harga_jual:
+        type: integer
+      id_mercant:
+        type: integer
+      id_supplier:
+        type: integer
+      is_aktif:
+        type: string
+      nama:
+        type: string
+      sku:
+        type: string
+      stock:
+        type: integer
+    type: object
+  request.User:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      id_mercant:
+        type: integer
+      nama:
+        type: string
+      no_telp:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  request.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  request.UserUpdate:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      nama:
+        type: string
+      no_telp:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  responses.AuthError:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  responses.AuthOK:
+    properties:
+      expired:
+        type: integer
+      message:
+        type: string
+      status:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/forms.User'
+    type: object
+  responses.ListProduct:
+    properties:
+      current_page:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/forms.Product'
+        type: array
+      last_page:
+        type: integer
+      next_page:
+        type: integer
+      per_page:
+        type: integer
+      prev_page:
+        type: integer
+      status:
+        type: integer
+      total:
+        type: integer
+    type: object
+  responses.ListUser:
+    properties:
+      current_page:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/forms.User'
+        type: array
+      last_page:
+        type: integer
+      next_page:
+        type: integer
+      per_page:
+        type: integer
+      prev_page:
+        type: integer
+      status:
+        type: integer
+      total:
+        type: integer
+    type: object
+  responses.ProductData:
+    properties:
+      data:
+        $ref: '#/definitions/forms.Product'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  responses.ProductDefault:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  responses.UserData:
+    properties:
+      data:
+        $ref: '#/definitions/forms.User'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  responses.UserDefault:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: Api untuk service MINI-POS
+  title: API MINI-POS
+  version: "1.0"
+paths:
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: Show all data Product Mercant with pagination
+      parameters:
+      - description: Some Fiter
+        in: query
+        name: filter
+        type: string
+      - description: name|asc
+        in: query
+        name: sort
+        required: true
+        type: string
+      - description: "1"
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: "5"
+        in: query
+        name: per_page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ListProduct'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "500":
+          description: Something Wrong on Server
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list data Product In Mercant
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      description: Create Product
+      parameters:
+      - description: Create Product
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/request.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "400":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "500":
+          description: Something Wrong on Server
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Create Product
+      tags:
+      - Product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Product by ID
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "401":
+          description: Error Not Logged In
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: ID not found
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "406":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Product by ID
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      description: Update Product by ID
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Product
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "401":
+          description: Error Not Logged In
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: ID not found
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+        "406":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Product by ID
+      tags:
+      - Product
+  /product/view/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Show by id Product
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ProductData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ProductDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Get By Id Product
+      tags:
+      - Product
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Show all data User Mercant with pagination
+      parameters:
+      - description: Some Fiter
+        in: query
+        name: filter
+        type: string
+      - description: name|asc
+        in: query
+        name: sort
+        required: true
+        type: string
+      - description: "1"
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: "5"
+        in: query
+        name: per_page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ListUser'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "500":
+          description: Something Wrong on Server
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Get list data User Mercant
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: Create User
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/request.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "400":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "500":
+          description: Something Wrong on Server
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Create User
+      tags:
+      - User
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User by ID
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "401":
+          description: Error Not Logged In
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: ID not found
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "406":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete User by ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update User by ID
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update User
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "401":
+          description: Error Not Logged In
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: ID not found
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+        "406":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Update User by ID
+      tags:
+      - User
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: Login User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AuthOK'
+        "400":
+          description: Invalid Form
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+      summary: Login User
+      tags:
+      - User
+  /user/session:
+    get:
+      consumes:
+      - application/json
+      description: Show Session User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Get By Session User
+      tags:
+      - User
+  /user/view/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Show by id User
+      parameters:
+      - description: Some ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.AuthError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.UserDefault'
+      security:
+      - ApiKeyAuth: []
+      summary: Get By Id User
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
